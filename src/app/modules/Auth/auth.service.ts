@@ -22,7 +22,7 @@ const RegistrationDB = async (payload: any) => {
 const loginUserDB = async (payload: any) => {
   const userData = await prisma.user.findUnique({
     where: {
-      email: payload.email,
+      email: payload?.email,
     },
   });
 
@@ -33,13 +33,13 @@ const loginUserDB = async (payload: any) => {
  
 
   
-  // const isCorrectPassword: boolean = await bcrypt.compare(
-  //   payload.password,
-  //   userData.password
-  // );
-  // if (!isCorrectPassword) {
-  //   throw new Error("Password incorrect!");
-  // }
+  const isCorrectPassword: boolean = await bcrypt.compare(
+    payload.password,
+    userData.password
+  );
+  if (!isCorrectPassword) {
+    throw new Error("Password incorrect!");
+  }
   const accessToken = jwtHelpers.generateToken(
     {
       email: userData.email,

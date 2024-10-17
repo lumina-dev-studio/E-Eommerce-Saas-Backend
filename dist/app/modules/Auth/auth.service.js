@@ -29,20 +29,17 @@ const RegistrationDB = (payload) => __awaiter(void 0, void 0, void 0, function* 
 const loginUserDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUnique({
         where: {
-            email: payload.email,
+            email: payload === null || payload === void 0 ? void 0 : payload.email,
         },
     });
     if (!userData) {
         console.log("nei");
         throw new Error(" Unauthorized Access!");
     }
-    // const isCorrectPassword: boolean = await bcrypt.compare(
-    //   payload.password,
-    //   userData.password
-    // );
-    // if (!isCorrectPassword) {
-    //   throw new Error("Password incorrect!");
-    // }
+    const isCorrectPassword = yield bcrypt_1.default.compare(payload.password, userData.password);
+    if (!isCorrectPassword) {
+        throw new Error("Password incorrect!");
+    }
     const accessToken = jwtHelpers_1.jwtHelpers.generateToken({
         email: userData.email,
         id: userData.id,
